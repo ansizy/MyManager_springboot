@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.MovieInfoMapper">
+
+    <!--    id 与方法名一致,
+            resultType 返回类型 是返回对于的实体类
+            parameterType 参数类型-->
+    <select id="selectAll" resultType="com.example.demo.entity.av_info">
+        select * from av_info
+    </select>
+
+    <select id="selectPage" resultType="com.example.demo.entity.avInfoSimple">
+        select av_id, av_title, av_poster
+        from av_info
+        order by join_time DESC
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="selectPageOrderByPublishTime" resultType="com.example.demo.entity.avInfoSimple">
+        select av_id, av_title, av_poster
+        from av_info
+        order by publish_time DESC
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="selectLikeMoviePage" resultType="com.example.demo.entity.avInfoSimple">
+        select av_id, av_title, av_poster
+        from av_info
+        where is_like = 1
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="selectLike" resultType="com.example.demo.entity.avInfoSimple">
+        select av_id, av_title, av_poster
+        from av_info
+        where av_id like #{search}
+    </select>
+
+    <select id="selectActorPage" resultType="com.example.demo.entity.avInfoSimple">
+        select av_info.av_id, av_info.av_title, av_info.av_poster
+        from av_info left join av_actor on av_info.av_id = av_actor.av_fanhao
+        where actor_name = #{name}
+        order by join_time DESC
+            limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="selectActorPageOrderByPublishTime" resultType="com.example.demo.entity.avInfoSimple">
+        select av_info.av_id, av_info.av_title, av_info.av_poster
+        from av_info left join av_actor on av_info.av_id = av_actor.av_fanhao
+        where actor_name = #{name}
+        order by publish_time DESC
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into av_info (av_id, av_title, av_plot, av_local, av_poster, av_fanart,
+                             publish_time, join_time, update_time,
+                             is_like, is_download, run_time)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.avId}, #{info.avTitle},  #{info.avPlot},
+             #{info.avLocal},  #{info.avPoster},  #{info.avFanart},
+             #{info.publishTime},  #{info.joinTime},  #{info.updateTime},
+             #{info.isLike},  #{info.isDownload}, #{info.runTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertAvActorList" parameterType="java.util.List">
+        insert into av_actor (av_fanhao, actor_name)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.avFanhao}, #{info.actorName})
+        </foreach>
+    </insert>
+
+    <insert id="insertAvGenreList" parameterType="java.util.List">
+        insert into av_genre (av_fanhao, av_genre)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.avFanhao}, #{info.avGenre})
+        </foreach>
+    </insert>
+
+    <insert id="insertAvTagList" parameterType="java.util.List">
+        insert into av_tag (av_fanhao, av_tag)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.avFanhao}, #{info.avTag})
+        </foreach>
+    </insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
