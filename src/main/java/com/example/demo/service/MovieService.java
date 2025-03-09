@@ -387,7 +387,7 @@ public class MovieService {
      */
     private List<String> getAllPath(String path) {
         File dir = new File(path);
-        // fan返回结果
+        // 返回结果
         List<String> pathList = new ArrayList<String>();
 
         if(dir.isDirectory() && dir.exists()) {
