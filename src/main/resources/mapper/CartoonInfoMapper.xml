@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.CartoonInfoMapper">
+
+    <select id="selectPage" resultType="com.example.demo.entity.CartoonInfo">
+        select *
+        from cartoon_info
+        order by join_time DESC
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <insert id="insertCartoonInfoList" parameterType="java.util.List">
+        insert into cartoon_info (name, path, pageNumber, join_time)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.name}, #{info.path}, #{info.pageNumber}, #{info.joinTime})
+        </foreach>
+    </insert>
+</mapper>

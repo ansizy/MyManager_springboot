@@ -23,16 +23,16 @@ class CartoonUtilTest {
             System.out.println(info.getName() + info.getPageNumber());
         }
     }
+
+
     @Test
-    void getPosterByPath() {
-        String path = "G:\\本子\\[Banana重新汉化]  [苍山哲]ドハマりママ～息子の亲友とヤリたい牝～ (ANGEL 俱乐部 2022年3月号) [中国翻译] [DL版]";
-        String s = null;
-        try {
-            s = CartoonUtil.getPosterByPath(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    void getHttp() {
+        String path = "G:\\本子\\精品\\[よもだよも] 高學曆(インテリ)人妻雨宮透子準教授(せんせい)の發情";
+        Integer autoId = 1;
+        List<String> list = CartoonUtil.path2Http(path, autoId);
+        for (String s : list) {
+            System.out.println(s);
         }
-        System.out.println(s);
     }
 
 }

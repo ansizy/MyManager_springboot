@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.common.Result;
 import com.example.demo.entity.resourcePath;
+import com.example.demo.service.CartoonService;
 import com.example.demo.service.MovieService;
 import com.example.demo.service.SettingService;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ public class SettingController {
 
     @Resource
     private MovieService movieService;
+
+    @Resource
+    private CartoonService cartoonService;
 
     @GetMapping("/getAllPath")
     public Result getAllPath() {
@@ -37,6 +41,10 @@ public class SettingController {
         if (resourcePath.getType().equals("电影")) {
             res = movieService.addList(resourcePath.getPath());
         }
+        else if(resourcePath.getType().equals("漫画")) {
+            res = cartoonService.addList(resourcePath.getPath());
+        }
+
         if(res){
             // path 写入数据库
             settingService.addPath(resourcePath);

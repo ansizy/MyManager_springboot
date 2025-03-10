@@ -1,6 +1,7 @@
 package com.example.demo.utils;
 
 import com.example.demo.entity.CartoonInfo;
+import com.example.demo.exception.CustomException;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class CartoonUtil {
                 cartoonInfo.setPageNumber(pageNumber);
                 cartoonInfo.setPath(path);
                 cartoonInfoList.add(cartoonInfo);
+            }else {
+                throw new CustomException("400","源目录不存在");
             }
         }
         return cartoonInfoList;
@@ -47,13 +50,52 @@ public class CartoonUtil {
 
     /**
      *
-     * 根据地址获取封面 Poster : 封面
+     * 根据地址获取封面
      * @param resourcePath 本子磁盘地址
      * @return 封面
      */
     public static String getPosterByPath(String resourcePath) throws IOException {
-        String path = resourcePath + "\\00001.webp";
-        String poster = ImageUtil.getImageByPath(path);
-        return poster;
+        File dir = new File(resourcePath);
+        File[] files = dir.listFiles();
+        if(files != null && files.length > 0) {
+            return getPosterByPathAndPathName(resourcePath, files[0].getName());
+        }
+        return null;
+    }
+
+    /**
+     * 磁盘地址 文件夹中的所有文件 转变为http连接
+     * G:\本子\精品\危險!_性徒會 [ねいさん] 絕 あぶないっ!_ 性徒會 (コミック ジエス 04) [中國翻譯] [DL版]\00001.webp
+     * http://localhost:8080/cartoon/{autoId}/00001.webp
+     *
+     * @param resourcePath
+     * @return
+     */
+    public static List<String> path2Http(String resourcePath, Integer autoId) {
+        File dir = new File(resourcePath);
+        String baseUrl = "http://localhost:8080/cartoon/getPoster/" + autoId.toString() + "/";
+        // 返回结果
+        List<String> httpList = new ArrayList<String>();
+        File[] files = dir.listFiles();
+        if(files != null) {
+            for (File file : files) {
+                String temp = baseUrl + file.getName();
+                httpList.add(temp);
+            }
+        }
+        return httpList;
+    }
+
+    public static String getPosterByPathAndPathName(String path, String pathName) throws IOException {
+
+        File dir = new File(path);
+        if (dir.isDirectory() && dir.exists()) {
+            String temp = path + File.separator + pathName;
+            String poster = ImageUtil.getImageByPath(temp);
+            return poster;
+        }
+        else {
+            throw new CustomException("400","源目录不存在");
+        }
     }
 }
