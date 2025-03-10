@@ -49,10 +49,10 @@ public class CartoonController {
      * @param id 自增id
      * @return 整本漫画
      */
-    @GetMapping("/search/{id}")
-    public Result getSearch(@PathVariable String id) {
-
-        return Result.success();
+    @GetMapping("/searchId")
+    public Result getSearch(@RequestParam Integer id) {
+        List<String> res = cartoonService.getAllPagesById(id);
+        return Result.success(res);
     }
 
     /**

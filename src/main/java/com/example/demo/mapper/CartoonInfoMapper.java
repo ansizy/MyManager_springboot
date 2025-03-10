@@ -17,4 +17,7 @@ public interface CartoonInfoMapper {
 
     @Select("select path from cartoon_info where auto_id = #{id}")
     String selectPathByAutoId(Integer id);
+
+    @Select("select * from cartoon_info where name = #{name}")
+    CartoonInfo selectCartoonByName(String name);
 }

@@ -80,7 +80,20 @@ public class SettingController {
             return Result.error("500","地址或类型为空");
         }
         else{
-            Integer i = movieService.updateContent(resourcePath);
+            Integer i = 0;
+            if(resourcePath.getType().equals("电影")){
+                i = movieService.updateContent(resourcePath);
+            }
+            else if (resourcePath.getType().equals("漫画")){
+                i = cartoonService.updateCartoonContent(resourcePath);
+            }
+            else if (resourcePath.getType().equals("微博")){
+                i = 0;
+            }
+            else{
+                i = 0;
+            }
+
             if(i == 0){
                 return Result.error("500", "没有新增电影");
             }else {
@@ -96,8 +109,23 @@ public class SettingController {
             return Result.error("500","地址或类型为空");
         }
         else{
-            Integer i = movieService.deleteContent(resourcePath);
+            Integer i = 0;
+            if(resourcePath.getType().equals("电影")){
+                i = movieService.deleteContent(resourcePath);
+            }
+            else if (resourcePath.getType().equals("漫画")){
+                i = 0;
+            }
+            else if (resourcePath.getType().equals("微博")){
+                i = 0;
+            }
+            else{
+                i = 0;
+            }
+
+
             return Result.success(i);
         }
     }
+
 }

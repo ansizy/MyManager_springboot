@@ -6,6 +6,7 @@ import com.example.demo.exception.CustomException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +41,7 @@ public class CartoonUtil {
                 cartoonInfo.setName(fileName);
                 cartoonInfo.setPageNumber(pageNumber);
                 cartoonInfo.setPath(path);
+                cartoonInfo.setJoinTime(new Date());
                 cartoonInfoList.add(cartoonInfo);
             }else {
                 throw new CustomException("400","源目录不存在");
@@ -97,5 +99,26 @@ public class CartoonUtil {
         else {
             throw new CustomException("400","源目录不存在");
         }
+    }
+
+    public static List<String> getAllPagesByPath(String path) {
+        File dir = new File(path);
+        List<String> res = new ArrayList<>();
+        if (dir.isDirectory() && dir.exists()) {
+            File[] files = dir.listFiles();
+            assert files != null;
+            for (File file : files) {
+                try {
+                    String image = ImageUtil.getImageByPath(file.getAbsolutePath());
+                    res.add(image);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        else {
+            throw new CustomException("400","源目录不存在");
+        }
+        return res;
     }
 }

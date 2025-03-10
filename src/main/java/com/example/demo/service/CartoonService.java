@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.CartoonInfo;
+import com.example.demo.entity.resourcePath;
 import com.example.demo.mapper.CartoonInfoMapper;
 import com.example.demo.utils.CartoonUtil;
 import com.example.demo.utils.ImageUtil;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,5 +49,37 @@ public class CartoonService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<String> getAllPagesById(Integer id) {
+
+        String path = cartoonInfoMapper.selectPathByAutoId(id);
+
+        List<String> res = CartoonUtil.getAllPagesByPath(path);
+        return res;
+    }
+
+    public Integer updateCartoonContent(resourcePath resourcePath) {
+        if(resourcePath.getType().equals("漫画")){
+            String path = resourcePath.getPath();
+            Integer count = 0;
+            List<CartoonInfo> insertList = new ArrayList<>();
+            // 这里设定只增不删
+            List<CartoonInfo> infoList = CartoonUtil.getCartoonInfoListByPath(path);
+            for (CartoonInfo cartoonInfo : infoList) {
+                String name = cartoonInfo.getName();
+                CartoonInfo res = cartoonInfoMapper.selectCartoonByName(name);
+                if(res == null){
+                    insertList.add(cartoonInfo);
+                    count++;
+                }
+            }
+            if(insertList.size() > 0){
+                 cartoonInfoMapper.insertCartoonInfoList(insertList);
+            }
+            return count;
+        }
+        else
+            return 0;
     }
 }
