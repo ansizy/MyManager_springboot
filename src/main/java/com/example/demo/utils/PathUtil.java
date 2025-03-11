@@ -12,8 +12,8 @@ import java.util.List;
 public class PathUtil {
     /**
      *  获取最低一层的所有地址
-     * @param path "G:\\课件\\动漫\\杂\\1\\#整理完成"
-     * @return G:\课件\动漫\杂\1\#整理完成\#未知女优\[MIMK-103] 不擅长社交的寡妇雪女和被诅咒的戒指已售出两万多份！人气怪物春药漫画的真人版！
+     * @param path "G:\\本子"
+     * @return G:\\本子\\每个本子文件夹
      */
     public static List<String> getAllPath2Cartoon(String path) {
         File dir = new File(path);
@@ -33,4 +33,5 @@ public class PathUtil {
         }
         return pathList;
     }
+
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.TwitterMapper">
+
+    <insert id="insertTweetList" parameterType="java.util.List">
+        insert into cartoon_info (user_name, tweet_name, tweet_date, tweet_url, tweet_content,
+                                  media_url, media_type, saved_filename,
+                                  favorite_count, retweet_count, reply_count, display_name)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.userName}, #{info.tweetName}, #{info.tweetDate}, #{info.tweetUrl}, #{info.tweetContent},
+             #{info.mediaUrl}, #{info.mediaType}, #{info.savedFilename},
+             #{info.favoriteCount}, #{info.retweetCount}, #{info.replyCount}, #{info.displayName})
+        </foreach>
+    </insert>
+</mapper>
