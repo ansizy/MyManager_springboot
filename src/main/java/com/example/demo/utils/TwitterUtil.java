@@ -91,4 +91,8 @@ public class TwitterUtil {
             return null; // 处理无效数值
         }
     }
+
+    public static String getDisplayName() {
+        return null;
+    }
 }

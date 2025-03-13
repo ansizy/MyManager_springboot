@@ -13,7 +13,7 @@ public class TwitterInfo {
     private String path;
     private Integer number;
     private Date joinTime;
-    private String tag;
+    private String description;
     private Integer imageNumber;
     private Integer videoNumber;
 }

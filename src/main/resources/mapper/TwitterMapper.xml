@@ -5,14 +5,22 @@
 <mapper namespace="com.example.demo.mapper.TwitterMapper">
 
     <insert id="insertTweetList" parameterType="java.util.List">
-        insert into cartoon_info (user_name, tweet_name, tweet_date, tweet_url, tweet_content,
+        insert into tweet (user_name, tweet_date, tweet_url, tweet_content,
                                   media_url, media_type, saved_filename,
                                   favorite_count, retweet_count, reply_count, display_name)
         values
         <foreach collection="list" item="info" separator=",">
-            (#{info.userName}, #{info.tweetName}, #{info.tweetDate}, #{info.tweetUrl}, #{info.tweetContent},
+            (#{info.userName}, #{info.tweetDate}, #{info.tweetUrl}, #{info.tweetContent},
              #{info.mediaUrl}, #{info.mediaType}, #{info.savedFilename},
              #{info.favoriteCount}, #{info.retweetCount}, #{info.replyCount}, #{info.displayName})
+        </foreach>
+    </insert>
+
+    <insert id="insertTwitterInfoList" parameterType="java.util.List">
+        insert into twitter_info (user_name, display_name, path, join_time, number, image_number, video_number)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (#{info.userName}, #{info.displayName}, #{info.path}, #{info.joinTime}, #{info.number}, #{info.imageNumber}, #{info.videoNumber})
         </foreach>
     </insert>
 </mapper>

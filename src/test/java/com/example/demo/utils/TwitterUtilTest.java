@@ -1,14 +1,18 @@
 package com.example.demo.utils;
 
 import com.example.demo.entity.Tweet;
+import com.example.demo.service.TwitterService;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
 
 class TwitterUtilTest {
+
+
     @Test
     void getTweetCsv() throws Exception {
         String path = "F:\\新建文件夹\\t\\_UWUChenbaby\\_UWUChenbaby-2025-01-01_09-50-46.csv";

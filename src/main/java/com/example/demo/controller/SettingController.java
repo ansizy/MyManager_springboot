@@ -5,6 +5,7 @@ import com.example.demo.entity.resourcePath;
 import com.example.demo.service.CartoonService;
 import com.example.demo.service.MovieService;
 import com.example.demo.service.SettingService;
+import com.example.demo.service.TwitterService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,6 +23,9 @@ public class SettingController {
 
     @Resource
     private CartoonService cartoonService;
+
+    @Resource
+    private TwitterService twitterService;
 
     @GetMapping("/getAllPath")
     public Result getAllPath() {
@@ -43,6 +47,9 @@ public class SettingController {
         }
         else if(resourcePath.getType().equals("漫画")) {
             res = cartoonService.addList(resourcePath.getPath());
+        }
+        else if (resourcePath.getType().equals("推特")) {
+            res = twitterService.addTwitterInfoListAndTweetListBypath(resourcePath.getPath());
         }
 
         if(res){
@@ -87,7 +94,8 @@ public class SettingController {
             else if (resourcePath.getType().equals("漫画")){
                 i = cartoonService.updateCartoonContent(resourcePath);
             }
-            else if (resourcePath.getType().equals("微博")){
+            else if (resourcePath.getType().equals("推特")){
+                // 与电影 和 漫画 不同，微博的逻辑不同，微博的更新单独实现，根据每个博主的地址进行 "/twitter/update"
                 i = 0;
             }
             else{
@@ -103,6 +111,11 @@ public class SettingController {
         }
     }
 
+    /**
+     * TODO 删除逻辑还没有实现，只是空有架子
+     * @param resourcePath 地址
+     * @return 是否删除成功
+     */
     @PostMapping("/delete")
     public Result deletePath(@RequestBody resourcePath resourcePath) {
         if(resourcePath.getPath().isEmpty() || resourcePath.getType().isEmpty()){
@@ -122,10 +135,27 @@ public class SettingController {
             else{
                 i = 0;
             }
-
-
             return Result.success(i);
         }
     }
 
+
+    @PostMapping("/twitter/update")
+    public Result updateTwitterContent(@RequestBody resourcePath resourcePath) {
+        if(resourcePath.getPath().isEmpty() || resourcePath.getType().isEmpty()){
+            return Result.error("500","地址或类型为空");
+        }
+        else {
+            Integer i = 0;
+            if (resourcePath.getType().equals("推特")) {
+                i = cartoonService.updateCartoonContent(resourcePath);
+            }
+
+            if(i == 0){
+                return Result.error("500", "没有新增内容");
+            }else {
+                return Result.success(i);
+            }
+        }
+    }
 }
