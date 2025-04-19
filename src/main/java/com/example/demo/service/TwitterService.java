@@ -5,6 +5,7 @@ import com.example.demo.entity.Tweet;
 import com.example.demo.entity.TwitterInfo;
 import com.example.demo.exception.CustomException;
 import com.example.demo.mapper.TwitterMapper;
+import com.example.demo.utils.ImageUtil;
 import com.example.demo.utils.PathUtil;
 import com.example.demo.utils.TwitterUtil;
 import org.springframework.stereotype.Service;
@@ -95,9 +96,21 @@ public class TwitterService {
         return 0;
     }
 
-    public List<Tweet> getTweetListByUserName(String userName) {
-        System.out.println(userName);
-        return twitterMapper.selectTweetListByUserName(userName);
+    public List<Tweet> getTweetListByUserName(String userName, Integer page, Integer pageSize) throws IOException {
+        int offset = (page - 1) * pageSize;
+        // 获取文件夹磁盘地址
+        String path = twitterMapper.selectPathByUserName(userName);
+
+        List<Tweet> tweetList = twitterMapper.selectTweetListByUserName("@" + userName, offset, pageSize);
+        // 加载图片
+        for (Tweet tweet : tweetList) {
+            if (tweet.getMediaType().equals("Image")) {
+                String imagePath = path + "\\" + tweet.getSavedFilename();
+                String image = ImageUtil.getImageByPath(imagePath);
+                tweet.setMediaUrl(image);
+            }
+        }
+        return tweetList;
     }
 
     private List<Tweet> getTweetListBypath(String path) {

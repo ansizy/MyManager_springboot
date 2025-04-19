@@ -20,6 +20,11 @@ public interface TwitterMapper {
     @Select("select * from twitter_info")
     List<TwitterInfo> selectTwitterPageAll();
 
-    @Select("select * from tweet where user_name = #{userName}")
-    List<Tweet> selectTweetListByUserName(@Param("userName") String userName);
+    @Select("select * from tweet where user_name = #{userName} ORDER BY tweet_date DESC LIMIT #{pageSize} OFFSET #{offset}")
+    List<Tweet> selectTweetListByUserName(@Param("userName") String userName,
+                                          @Param("offset") int offset,
+                                          @Param("pageSize") int pageSize);
+
+    @Select("select path from twitter_info where user_name = #{userName}")
+    String selectPathByUserName(@Param("userName") String userName);
 }
