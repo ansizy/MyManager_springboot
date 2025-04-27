@@ -96,7 +96,13 @@ public class TwitterService {
         return 0;
     }
 
-    public List<Tweet> getTweetListByUserName(String userName, Integer page, Integer pageSize) throws IOException {
+    public String getBasePathByUserName(String userName) {
+        return twitterMapper.selectPathByUserName(userName);
+    }
+
+    public List<Tweet> getTweetListByUserName(String userName,
+                                              Integer page,
+                                              Integer pageSize) throws IOException {
         int offset = (page - 1) * pageSize;
         // 获取文件夹磁盘地址
         String path = twitterMapper.selectPathByUserName(userName);
@@ -108,6 +114,10 @@ public class TwitterService {
                 String imagePath = path + "\\" + tweet.getSavedFilename();
                 String image = ImageUtil.getImageByPath(imagePath);
                 tweet.setMediaUrl(image);
+            }
+            else if (tweet.getMediaType().equals("Video")) {
+                String videoPath = "/" + userName + "/" + tweet.getSavedFilename();
+                tweet.setMediaUrl(videoPath);
             }
         }
         return tweetList;
