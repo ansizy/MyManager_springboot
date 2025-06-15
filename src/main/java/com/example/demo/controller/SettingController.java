@@ -96,7 +96,9 @@ public class SettingController {
             }
             else if (resourcePath.getType().equals("推特")){
                 // 与电影 和 漫画 不同，微博的逻辑不同，微博的更新单独实现，根据每个博主的地址进行 "/twitter/update"
-                i = 0;
+                // 这里是有新增博主的更新，对原有的博主内容不更新
+                i = twitterService.updateNewTwitterContent(resourcePath);
+                // i = 0;
             }
             else{
                 i = 0;

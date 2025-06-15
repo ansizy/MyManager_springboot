@@ -34,4 +34,25 @@ public class PathUtil {
         return pathList;
     }
 
+    /**
+     *
+     * @param path 地址 "G:\\本子"
+     * @return filename "a", "b", "b"
+     */
+    public static List<String> getAllFileNameFromPath(String path) {
+        File dir = new File(path);
+        // 返回结果
+        List<String> res = new ArrayList<String>();
+        if(dir.isDirectory() && dir.exists()) {
+            File[] files = dir.listFiles();
+            for(File file : files) {
+                res.add(file.getName());
+            }
+        }
+        else {
+            throw new CustomException("400","源目录不存在");
+        }
+        return res;
+    }
+
 }

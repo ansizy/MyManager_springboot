@@ -27,4 +27,11 @@ public interface TwitterMapper {
 
     @Select("select path from twitter_info where user_name = #{userName}")
     String selectPathByUserName(@Param("userName") String userName);
+
+    @Select("select count(*) from twitter_info")
+    int countTwitterNumber();
+
+    // todo 这里path未用上
+    @Select("select user_name from twitter_info")
+    List<String> selectAllTwitterUserNameByPath(String path);
 }

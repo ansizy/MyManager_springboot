@@ -30,4 +30,10 @@ public class TwitterController {
                 pageInfo.getPageSize()));
     }
 
+    @GetMapping("/total")
+    public Result getTwitterTotal() {
+        return Result.success(twitterService.getTotalTwitter());
+
+    }
+
 }
