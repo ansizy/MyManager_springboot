@@ -98,6 +98,10 @@ public class TwitterService {
         return 0;
     }
 
+    public int getTotalByUsername(String userName) {
+        return twitterMapper.countTweetNumberByUsername("@" + userName);
+    }
+
     public String getBasePathByUserName(String userName) {
         return twitterMapper.selectPathByUserName(userName);
     }
@@ -157,52 +161,78 @@ public class TwitterService {
                 if(map.get(newUserName) == null){
                     // 新用户
                     String path = resourcePath.getPath() + "\\" + newUserName;
-                    File dir = new File(path);
-                    // String userName = FileNameUtil.mainName(path);
-                    String userName = newUserName;
-                    if (dir.isDirectory() && dir.exists()) {
-                        File[] files = dir.listFiles();
-                        int imageNumber = 0;
-                        int videoNumber = 0;
-                        int number = 0;
-                        String displayName = null;
-                        assert files != null;
-                        for (File file : files) {
-                            if (FileNameUtil.extName(file).equals("csv")) {
-                                // 添加tweet列表
-                                List<Tweet> tweetList = getTweetListBypath(file.getPath());
-                                if(!tweetList.isEmpty()){
-                                    twitterMapper.insertTweetList(tweetList);
-                                    number = tweetList.size();
-                                    displayName = tweetList.get(0).getDisplayName();
-                                }
-                            }
-                            else if (FileNameUtil.extName(file).equals("png") || FileNameUtil.extName(file).equals("jpg")) {
-                                imageNumber++;
-                            }
-                            else if (FileNameUtil.extName(file).equals("mp4")) {
-                                videoNumber++;
-                            }
-                            else {
-                                continue;
-                            }
-                        }
-                        // 组装twitterInfo实体类
-                        TwitterInfo twitterInfo = new TwitterInfo();
-                        twitterInfo.setUserName(userName);
-                        twitterInfo.setNumber(number);
-                        twitterInfo.setImageNumber(imageNumber);
-                        twitterInfo.setVideoNumber(videoNumber);
-                        twitterInfo.setPath(path);
-                        twitterInfo.setJoinTime(new Date());
-                        twitterInfo.setDisplayName(displayName);
-                        twitterInfoList.add(twitterInfo);
-                    }
+                    TwitterInfo twitterInfo = getTwitterInfoByPath(path);
+                    twitterInfoList.add(twitterInfo);
                 }
             }
             twitterMapper.insertTwitterInfoList(twitterInfoList);
             return twitterInfoList.size();
         }
         return 0;
+    }
+
+    /**
+     * 根据地址获取TwitterInfo实体，添加tweet
+     * @param path 地址 F:\新建文件夹\t\Joioio_
+     * @return TwitterInfo实体
+     */
+    private TwitterInfo getTwitterInfoByPath(String path) {
+        String userName = FileNameUtil.mainName(path);
+        File dir = new File(path);
+        if (dir.isDirectory() && dir.exists()) {
+            File[] files = dir.listFiles();
+            int imageNumber = 0;
+            int videoNumber = 0;
+            int number = 0;
+            String displayName = null;
+            assert files != null;
+            for (File file : files) {
+                if (FileNameUtil.extName(file).equals("csv")) {
+                    // 添加tweet列表
+                    List<Tweet> tweetList = getTweetListBypath(file.getPath());
+                    if(!tweetList.isEmpty()){
+                        twitterMapper.insertTweetList(tweetList);
+                        number = tweetList.size();
+                        displayName = tweetList.get(0).getDisplayName();
+                    }
+                }
+                else if (FileNameUtil.extName(file).equals("png") || FileNameUtil.extName(file).equals("jpg")) {
+                    imageNumber++;
+                }
+                else if (FileNameUtil.extName(file).equals("mp4")) {
+                    videoNumber++;
+                }
+                else {
+                    continue;
+                }
+            }
+            // 组装twitterInfo实体类
+            TwitterInfo twitterInfo = new TwitterInfo();
+            twitterInfo.setUserName(userName);
+            twitterInfo.setNumber(number);
+            twitterInfo.setImageNumber(imageNumber);
+            twitterInfo.setVideoNumber(videoNumber);
+            twitterInfo.setPath(path);
+            twitterInfo.setJoinTime(new Date());
+            twitterInfo.setDisplayName(displayName);
+            return twitterInfo;
+        }
+        return null;
+    }
+
+    // 更新现有博主的内容 先删后加版
+    public int updateExitTwitterContent(String userName, String path) {
+        // 删除 Tweet表 中博主的所有内容
+        int n = twitterMapper.deleteAllTweetByUsername(userName);
+        // 获取本地磁盘的博主内容（更新后）
+        TwitterInfo twitterInfo = getTwitterInfoByPath(path);
+        // 跟新 twitter_info表
+        int res = twitterMapper.updateTwitterInfo(twitterInfo);
+        return res;
+    }
+
+
+    public List<TwitterInfo> searchTwitterByKeyword(String keyword) {
+        return twitterMapper.selectTwitterByKeyword(keyword);
     }
 }

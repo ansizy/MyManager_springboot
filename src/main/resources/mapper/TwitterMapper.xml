@@ -23,4 +23,15 @@
             (#{info.userName}, #{info.displayName}, #{info.path}, #{info.joinTime}, #{info.number}, #{info.imageNumber}, #{info.videoNumber})
         </foreach>
     </insert>
+
+    <update id="updateTwitterInfo" parameterType="com.example.demo.entity.TwitterInfo">
+        UPDATE twitter_info
+        SET
+            display_name = #{displayName},
+            path = #{path},
+            number = #{number},
+            image_number = #{imageNumber},
+            video_number = #{videoNumber}
+        WHERE user_name = #{userName}
+    </update>
 </mapper>

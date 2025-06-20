@@ -2,6 +2,7 @@ package com.example.demo.mapper;
 
 import com.example.demo.entity.Tweet;
 import com.example.demo.entity.TwitterInfo;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -31,7 +32,18 @@ public interface TwitterMapper {
     @Select("select count(*) from twitter_info")
     int countTwitterNumber();
 
-    // todo 这里path未用上
+    // 这里path未用上
     @Select("select user_name from twitter_info")
     List<String> selectAllTwitterUserNameByPath(String path);
+
+    @Delete("delete * from tweet where user_name = #{userName}")
+    int deleteAllTweetByUsername(String userName);
+
+    int updateTwitterInfo(TwitterInfo twitterInfo);
+
+    @Select("select count(*) from tweet where user_name = #{userName}")
+    int countTweetNumberByUsername(String userName);
+
+    @Select("select * from twitter_info where user_name like CONCAT('%', #{keyword}, '%') or display_name like CONCAT('%', #{keyword}, '%')")
+    List<TwitterInfo> selectTwitterByKeyword(String keyword);
 }
