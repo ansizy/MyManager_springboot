@@ -145,7 +145,7 @@ public class TwitterService {
         return twitterMapper.countTwitterNumber();
     }
 
-    // 更新博主
+    // 更新博主 检测地址内新增博主
     public Integer updateNewTwitterContent(resourcePath resourcePath) {
         if(resourcePath.getType().equals("推特")){
             // 获取已存在的博主列表
@@ -220,7 +220,7 @@ public class TwitterService {
         return null;
     }
 
-    // 更新现有博主的内容 先删后加版
+    // todo 更新现有博主的内容 先删后加版
     public int updateExitTwitterContent(String userName, String path) {
         // 删除 Tweet表 中博主的所有内容
         int n = twitterMapper.deleteAllTweetByUsername(userName);
@@ -234,5 +234,39 @@ public class TwitterService {
 
     public List<TwitterInfo> searchTwitterByKeyword(String keyword) {
         return twitterMapper.selectTwitterByKeyword(keyword);
+    }
+
+    public boolean addLikeTweetByAutoId(int autoId) {
+        return twitterMapper.updateLikeTweetByAutoId(autoId);
+    }
+
+    public boolean removeLikeTweetByAutoId(int autoId) {
+        return twitterMapper.updateLikeTweetByAutoIdRemove(autoId);
+    }
+
+    public List<Tweet> getLikeTweetList(String userName,
+                                        Integer page,
+                                        Integer pageSize) throws IOException {
+        int offset = (page - 1) * pageSize;
+        HashMap<String, String> username2path = new HashMap<String, String>();
+        List<Tweet> tweetList = twitterMapper.selectLikeTweetList(offset, pageSize);
+        List<TwitterInfo> allTwitterInfo = getTwitterPageAll();
+        for (TwitterInfo twitterInfo : allTwitterInfo) {
+            username2path.put("@" + twitterInfo.getUserName(), twitterInfo.getPath());
+        }
+        // 加载图片
+        for (Tweet tweet : tweetList) {
+            if (tweet.getMediaType().equals("Image")) {
+                String path = username2path.get(tweet.getUserName());
+                String imagePath = path + "\\" + tweet.getSavedFilename();
+                String image = ImageUtil.getImageByPath(imagePath);
+                tweet.setMediaUrl(image);
+            }
+            else if (tweet.getMediaType().equals("Video")) {
+                String videoPath = "/" + userName + "/" + tweet.getSavedFilename();
+                tweet.setMediaUrl(videoPath);
+            }
+        }
+        return tweetList;
     }
 }

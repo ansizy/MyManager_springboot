@@ -5,6 +5,7 @@ import com.example.demo.entity.TwitterInfo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -46,4 +47,14 @@ public interface TwitterMapper {
 
     @Select("select * from twitter_info where user_name like CONCAT('%', #{keyword}, '%') or display_name like CONCAT('%', #{keyword}, '%')")
     List<TwitterInfo> selectTwitterByKeyword(String keyword);
+
+    @Update("update tweet set is_like = 0 where auto_id = #{autoId}")
+    boolean updateLikeTweetByAutoIdRemove(int autoId);
+
+    @Update("update tweet set is_like = 1 where auto_id = #{autoId}")
+    boolean updateLikeTweetByAutoId(int autoId);
+
+
+    @Select("select * from tweet where is_like = 1 ORDER BY tweet_date DESC LIMIT #{pageSize} OFFSET #{offset}")
+    List<Tweet> selectLikeTweetList( @Param("offset") int offset,@Param("pageSize") int pageSize);
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import cn.hutool.poi.excel.cell.CellSetter;
 import com.example.demo.common.Result;
 import com.example.demo.entity.PageInfo;
 import com.example.demo.entity.TwitterInfo;
@@ -32,6 +33,21 @@ public class TwitterController {
                 pageInfo.getPage(),
                 pageInfo.getPageSize()));
     }
+
+    /**
+     *  获取喜欢的tweet
+     * @param pageInfo 分页
+     * @return tweet
+     * @throws IOException io异常
+     */
+    @PostMapping("/like/getTweet")
+    public Result getLikeTweet(@RequestBody PageInfo pageInfo) throws IOException {
+        return Result.success(twitterService.getLikeTweetList(
+                pageInfo.getUserName(),
+                pageInfo.getPage(),
+                pageInfo.getPageSize()));
+    }
+
 
     /**
      * 获取全部博主数量
@@ -84,6 +100,41 @@ public class TwitterController {
         List<TwitterInfo> res =  twitterService.searchTwitterByKeyword(keyword);
         return Result.success(res);
     }
+
+    // TODO 喜欢列表
+
+    /**
+     * 添加到喜欢
+     * @param autoId 唯一id
+     * @return 是否添加成功
+     */
+    @GetMapping("/like/add/tweet")
+    public Result addLikeTweet(@RequestParam int autoId) {
+        if (autoId <= 0) {
+            return Result.error();
+        }
+        if (twitterService.addLikeTweetByAutoId(autoId))
+            return Result.success();
+        else
+            return Result.error();
+    }
+
+    /**
+     * 去除喜欢
+     * @param autoId 唯一id
+     * @return 是否移除成功
+     */
+    @GetMapping("/like/remove/tweet")
+    public Result removeLikeTweet(@RequestParam int autoId) {
+        if (autoId <= 0) {
+            return Result.error();
+        }
+        if (twitterService.removeLikeTweetByAutoId(autoId))
+            return Result.success();
+        else
+            return Result.error();
+    }
+
 
 
 }

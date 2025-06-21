@@ -18,4 +18,5 @@ public class Tweet {
     private Integer favoriteCount;
     private Integer retweetCount;
     private Integer replyCount;
+    private Integer isLike;
 }

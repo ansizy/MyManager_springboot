@@ -76,6 +76,8 @@ public class TwitterUtil {
                 tweet.setFavoriteCount(convertToInteger(record.get("Favorite Count")));
                 tweet.setRetweetCount(convertToInteger(record.get("Retweet Count")));
                 tweet.setReplyCount(convertToInteger(record.get("Reply Count")));
+                // 是否喜欢
+                tweet.setIsLike(0);
 
                 tweets.add(tweet);
             }
